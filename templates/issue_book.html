@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Issue Book - Library Management System{% endblock %}
+{% block page_title %}Issue Book to Student{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="custom-card shadow-sm">
+            <div class="custom-card-header">
+                <h5><i class="bi bi-box-arrow-right text-primary"></i> Issue Circulation Loan</h5>
+                <a href="{{ url_for('view_books_page') }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-book"></i> View Catalog
+                </a>
+            </div>
+            <div class="custom-card-body p-4">
+                {% if available_books %}
+                    <form method="POST" action="{{ url_for('issue_book_page') }}" novalidate>
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                        <!-- Book Selection -->
+                        <div class="mb-3">
+                            <label for="book_id" class="form-label-custom">Select Available Book <span class="text-danger">*</span></label>
+                            <select class="form-select form-select-custom" id="book_id" name="book_id" required>
+                                <option value="" disabled {% if not selected_book_id %}selected{% endif %}>-- Select an in-stock book title --</option>
+                                {% for book in available_books %}
+                                    <option value="{{ book.id }}" {% if selected_book_id == book.id %}selected{% endif %}>
+                                        #{{ book.id }} - {{ book.title }} by {{ book.author }} (Available: {{ book.quantity }} copies)
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">Only titles with active in-stock inventory (> 0) can be issued.</div>
+                        </div>
+
+                        <!-- Student Full Name -->
+                        <div class="mb-3">
+                            <label for="student_name" class="form-label-custom">Student Full Name <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-person-badge text-muted"></i></span>
+                                <input type="text" class="form-control form-control-custom" id="student_name" name="student_name" 
+                                       placeholder="e.g. Alice Smith" required autofocus>
+                            </div>
+                            <div class="form-text">Enter the full name of the student borrowing this publication.</div>
+                        </div>
+
+                        <!-- Automated Issue Timestamp (Display) -->
+                        <div class="mb-4">
+                            <label class="form-label-custom">Issue Date & Time</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-calendar-check text-muted"></i></span>
+                                <input type="text" class="form-control form-control-custom bg-light" value="{{ current_timestamp }}" readonly>
+                            </div>
+                            <div class="form-text">System timestamp will automatically be stamped onto this loan transaction.</div>
+                        </div>
+
+                        <!-- Policy Note -->
+                        <div class="alert alert-light border small text-muted mb-4 d-flex align-items-center gap-2">
+                            <i class="bi bi-info-circle text-primary fs-5"></i>
+                            <div>
+                                Upon confirmation, the book's available stock will atomically decrement by 1 in the SQLite database.
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex align-items-center justify-content-end gap-2 pt-2 border-top">
+                            <a href="{{ url_for('view_books_page') }}" class="btn btn-light border px-3">Cancel</a>
+                            <button type="submit" class="btn btn-primary-custom px-4 d-flex align-items-center gap-2">
+                                <i class="bi bi-check-circle"></i> Confirm Book Issue
+                            </button>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-journal-x fs-1 d-block mb-3 text-danger"></i>
+                        <h5>No Books Available to Issue</h5>
+                        <p class="small text-secondary mb-3">All books in the library inventory are currently out of stock or no books have been added yet.</p>
+                        <a href="{{ url_for('add_book_page') }}" class="btn btn-primary-custom btn-sm">Add New Book / Restock</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

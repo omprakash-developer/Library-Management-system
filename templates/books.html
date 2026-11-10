@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Books Catalog - Library Management System{% endblock %}
+{% block page_title %}Books Catalog{% endblock %}
+
+{% block content %}
+<div class="custom-card">
+    <div class="custom-card-header flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="mb-0"><i class="bi bi-book text-primary"></i> Library Books Collection</h5>
+            <span class="badge bg-secondary-subtle text-secondary border">{{ books|length }} Titles</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('export_books_csv_route') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-download"></i> Export CSV
+            </a>
+            <a href="{{ url_for('add_book_page') }}" class="btn btn-primary-custom btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i> Add New Book
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="p-3 border-bottom bg-light bg-opacity-50">
+        <div class="row g-2 align-items-center justify-content-between">
+            <div class="col-md-5">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0" id="tableSearchInput" placeholder="Filter by title, author, or ID...">
+                </div>
+            </div>
+            <div class="col-md-5 d-flex justify-content-md-end gap-1">
+                <a href="{{ url_for('view_books_page') }}" class="btn btn-sm btn-outline-secondary {% if not current_filter %}active{% endif %}">All</a>
+                <a href="{{ url_for('view_books_page', filter='available') }}" class="btn btn-sm btn-outline-success {% if current_filter == 'available' %}active{% endif %}">In Stock</a>
+                <a href="{{ url_for('view_books_page', filter='out_of_stock') }}" class="btn btn-sm btn-outline-danger {% if current_filter == 'out_of_stock' %}active{% endif %}">Out of Stock</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Books Table -->
+    <div class="table-responsive">
+        <table class="table custom-table table-hover filterable-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th style="width: 140px;">Quantity</th>
+                    <th style="width: 130px;">Status</th>
+                    <th style="width: 130px;">Loan History</th>
+                    <th class="text-end" style="width: 160px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if books %}
+                    {% for book in books %}
+                        <tr>
+                            <td class="fw-bold text-secondary">#{{ book.id }}</td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ book.title }}</div>
+                            </td>
+                            <td class="text-secondary">{{ book.author }}</td>
+                            <td>
+                                <span class="fw-bold fs-6 {{ 'text-danger' if book.quantity == 0 else 'text-dark' }}">{{ book.quantity }}</span>
+                                <small class="text-muted">copies</small>
+                            </td>
+                            <td>
+                                {% if book.quantity > 0 %}
+                                    <span class="badge-status badge-in-stock">
+                                        <i class="bi bi-check-circle"></i> In Stock
+                                    </span>
+                                {% else %}
+                                    <span class="badge-status badge-out-of-stock">
+                                        <i class="bi bi-x-circle"></i> Out of Stock
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if book.issue_count > 0 %}
+                                    <span class="badge bg-light text-secondary border" title="{{ book.issue_count }} issue transactions on record">
+                                        <i class="bi bi-journal-text me-1"></i> {{ book.issue_count }} loan(s)
+                                    </span>
+                                    {% if book.active_loans > 0 %}
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle" title="{{ book.active_loans }} active loan(s)">
+                                            {{ book.active_loans }} active
+                                        </span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-muted small">No loans</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-1">
+                                    <!-- Quick Issue Button (if copies available) -->
+                                    {% if book.quantity > 0 %}
+                                        <a href="{{ url_for('issue_book_page', book_id=book.id) }}" class="btn btn-outline-success btn-action" title="Issue this book">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                        </a>
+                                    {% else %}
+                                        <button class="btn btn-outline-secondary btn-action" disabled title="Out of stock">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                        </button>
+                                    {% endif %}
+
+                                    <!-- Edit Button -->
+                                    <a href="{{ url_for('edit_book_page', id=book.id) }}" class="btn btn-outline-primary btn-action" title="Edit book details">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+
+                                    <!-- Delete Button (Triggers modal with referential integrity guard) -->
+                                    {% if book.issue_count > 0 %}
+                                        <button type="button" class="btn btn-outline-secondary btn-action" 
+                                                title="Cannot delete: book has issue history records"
+                                                onclick="alert('Cannot delete \'{{ book.title|replace('\'', '\\\'') }}\'! This book has historical loan records. Deleting it would violate audit history integrity.');">
+                                            <i class="bi bi-trash text-muted"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="button" class="btn btn-outline-danger btn-action" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deleteConfirmModal"
+                                                data-book-id="{{ book.id }}"
+                                                data-book-title="{{ book.title }}"
+                                                title="Delete book">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="bi bi-journal-x fs-1 d-block mb-2"></i>
+                            <h5>No books found</h5>
+                            <p class="small text-secondary">Try adjusting your filter or add a new book to the library.</p>
+                            <a href="{{ url_for('add_book_page') }}" class="btn btn-primary-custom btn-sm">Add New Book</a>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

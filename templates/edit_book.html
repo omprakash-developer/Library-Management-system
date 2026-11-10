@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Book #{{ book.id }} - Library Management System{% endblock %}
+{% block page_title %}Edit Book Details{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="custom-card shadow-sm">
+            <div class="custom-card-header">
+                <h5><i class="bi bi-pencil-square text-primary"></i> Edit Book Details (ID #{{ book.id }})</h5>
+                <a href="{{ url_for('view_books_page') }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Catalog
+                </a>
+            </div>
+            <div class="custom-card-body p-4">
+                <form method="POST" action="{{ url_for('edit_book_page', id=book.id) }}" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <!-- Book ID (Readonly) -->
+                    <div class="mb-3">
+                        <label class="form-label-custom">Book ID (Primary Key)</label>
+                        <input type="text" class="form-control form-control-custom bg-light" value="#{{ book.id }}" readonly>
+                    </div>
+
+                    <!-- Book Title -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label-custom">Book Title <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-book text-muted"></i></span>
+                            <input type="text" class="form-control form-control-custom" id="title" name="title" 
+                                   value="{{ request.form.get('title', book.title) }}" required>
+                        </div>
+                    </div>
+
+                    <!-- Author Name -->
+                    <div class="mb-3">
+                        <label for="author" class="form-label-custom">Author(s) <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-person text-muted"></i></span>
+                            <input type="text" class="form-control form-control-custom" id="author" name="author" 
+                                   value="{{ request.form.get('author', book.author) }}" required>
+                        </div>
+                    </div>
+
+                    <!-- In-Stock Quantity -->
+                    <div class="mb-4">
+                        <label for="quantity" class="form-label-custom">In-Stock Quantity <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-collection text-muted"></i></span>
+                            <input type="number" class="form-control form-control-custom" id="quantity" name="quantity" 
+                                   value="{{ request.form.get('quantity', book.quantity) }}" 
+                                   min="0" step="1" required>
+                        </div>
+                        <div class="form-text">Must be a non-negative integer ($\ge 0$). Setting to 0 marks book as Out of Stock.</div>
+                    </div>
+
+                    <!-- Submit Actions -->
+                    <div class="d-flex align-items-center justify-content-end gap-2 pt-2 border-top">
+                        <a href="{{ url_for('view_books_page') }}" class="btn btn-light border px-3">Cancel</a>
+                        <button type="submit" class="btn btn-primary-custom px-4 d-flex align-items-center gap-2">
+                            <i class="bi bi-check2-circle"></i> Update Book
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

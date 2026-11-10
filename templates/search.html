@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Search Books - Library Management System{% endblock %}
+{% block page_title %}Advanced Book Search{% endblock %}
+
+{% block content %}
+<div class="custom-card shadow-sm mb-4">
+    <div class="custom-card-header">
+        <h5><i class="bi bi-search text-primary"></i> Search Library Inventory</h5>
+    </div>
+    <div class="custom-card-body p-4">
+        <form method="GET" action="{{ url_for('search_page') }}">
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <label for="query" class="form-label-custom">Search Keywords</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" class="form-control form-control-custom" id="query" name="query" 
+                               value="{{ query }}" placeholder="Enter title, author name, or book ID..." autofocus>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label for="search_by" class="form-label-custom">Search Field</label>
+                    <select class="form-select form-select-custom" id="search_by" name="search_by">
+                        <option value="all" {% if search_by == 'all' %}selected{% endif %}>All Fields</option>
+                        <option value="title" {% if search_by == 'title' %}selected{% endif %}>Book Title</option>
+                        <option value="author" {% if search_by == 'author' %}selected{% endif %}>Author Name</option>
+                        <option value="id" {% if search_by == 'id' %}selected{% endif %}>Book ID</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary-custom w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Search Results Table -->
+<div class="custom-card shadow-sm">
+    <div class="custom-card-header">
+        <h5>
+            <i class="bi bi-card-list text-primary"></i> 
+            Search Results
+            {% if query %}
+                <span class="text-muted fw-normal fs-6">for "{{ query }}" in {{ search_by }}</span>
+            {% endif %}
+        </h5>
+        {% if results is not none %}
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
+                {{ results|length }} Result(s) Found
+            </span>
+        {% endif %}
+    </div>
+
+    <div class="table-responsive">
+        <table class="table custom-table table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th style="width: 130px;">In Stock</th>
+                    <th style="width: 140px;">Status</th>
+                    <th class="text-end" style="width: 150px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if results is not none and results %}
+                    {% for book in results %}
+                        <tr>
+                            <td class="fw-bold text-secondary">#{{ book.id }}</td>
+                            <td class="fw-medium text-dark">{{ book.title }}</td>
+                            <td class="text-secondary">{{ book.author }}</td>
+                            <td>
+                                <span class="fw-bold">{{ book.quantity }}</span> <small class="text-muted">copies</small>
+                            </td>
+                            <td>
+                                {% if book.quantity > 0 %}
+                                    <span class="badge-status badge-in-stock">
+                                        <i class="bi bi-check-circle"></i> Available
+                                    </span>
+                                {% else %}
+                                    <span class="badge-status badge-out-of-stock">
+                                        <i class="bi bi-x-circle"></i> Out of Stock
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-1">
+                                    {% if book.quantity > 0 %}
+                                        <a href="{{ url_for('issue_book_page', book_id=book.id) }}" class="btn btn-outline-success btn-action" title="Issue this book">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                        </a>
+                                    {% endif %}
+                                    <a href="{{ url_for('edit_book_page', id=book.id) }}" class="btn btn-outline-primary btn-action" title="Edit book">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% elif query %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-search fs-1 d-block mb-2 text-secondary"></i>
+                            <h5>No matching books found</h5>
+                            <p class="small text-secondary mb-0">No records match your query "{{ query }}". Try searching with different keywords.</p>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-arrow-up-circle fs-2 d-block mb-2 text-primary"></i>
+                            <div class="fw-medium">Ready to search</div>
+                            <small class="text-secondary">Enter search keywords above to query by title, author name, or ID.</small>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,424 @@
+/* ==========================================================================
+   Library Management System - Professional Admin Dashboard Stylesheet
+   Theme: Modern Enterprise Navy & Slate
+   ========================================================================== */
+
+:root {
+    --sidebar-bg: #0f172a;
+    --sidebar-hover: #1e293b;
+    --sidebar-active: #2563eb;
+    --sidebar-text: #94a3b8;
+    --sidebar-text-active: #ffffff;
+    --sidebar-width: 260px;
+    
+    --bg-body: #f8fafc;
+    --card-bg: #ffffff;
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    
+    --primary-blue: #2563eb;
+    --primary-blue-hover: #1d4ed8;
+    --success-green: #10b981;
+    --warning-amber: #f59e0b;
+    --danger-red: #ef4444;
+    --info-teal: #06b6d4;
+    --purple-accent: #8b5cf6;
+    
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   Sidebar Navigation
+   ========================================================================== */
+
+#sidebar-wrapper {
+    min-height: 100vh;
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.25s ease-in-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-heading {
+    padding: 1.25rem 1.5rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-heading .brand-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.35);
+}
+
+.sidebar-nav-section {
+    padding: 1rem 1rem 0.25rem 1.25rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #64748b;
+}
+
+.sidebar-nav {
+    padding: 0.5rem 0.75rem;
+    flex-grow: 1;
+}
+
+.sidebar-nav .nav-link {
+    color: var(--sidebar-text);
+    padding: 0.68rem 1rem;
+    font-size: 0.92rem;
+    font-weight: 500;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 0.25rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.sidebar-nav .nav-link i {
+    font-size: 1.15rem;
+    width: 22px;
+    text-align: center;
+    transition: transform 0.15s ease;
+}
+
+.sidebar-nav .nav-link:hover {
+    color: #ffffff;
+    background-color: var(--sidebar-hover);
+}
+
+.sidebar-nav .nav-link:hover i {
+    transform: translateX(2px);
+}
+
+.sidebar-nav .nav-link.active {
+    color: var(--sidebar-text-active);
+    background-color: var(--sidebar-active);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background-color: rgba(0, 0, 0, 0.15);
+    font-size: 0.82rem;
+    color: #64748b;
+}
+
+/* ==========================================================================
+   Page Content Area
+   ========================================================================== */
+
+#page-content-wrapper {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.25s ease-in-out;
+}
+
+.top-navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.85rem 1.75rem;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    box-shadow: var(--shadow-sm);
+}
+
+.main-content {
+    padding: 1.75rem;
+    flex-grow: 1;
+}
+
+/* ==========================================================================
+   Dashboard Metrics Cards
+   ========================================================================== */
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.35rem 1.4rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-card .stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.45rem;
+}
+
+.stat-card .stat-value {
+    font-size: 1.85rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.stat-card .stat-label {
+    font-size: 0.84rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.25rem;
+}
+
+/* Accent Card Themes */
+.stat-card-blue .stat-icon {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+.stat-card-purple .stat-icon {
+    background-color: #f5f3ff;
+    color: #8b5cf6;
+}
+.stat-card-green .stat-icon {
+    background-color: #ecfdf5;
+    color: #10b981;
+}
+.stat-card-amber .stat-icon {
+    background-color: #fffbeb;
+    color: #f59e0b;
+}
+.stat-card-teal .stat-icon {
+    background-color: #ecfeff;
+    color: #06b6d4;
+}
+.stat-card-red .stat-icon {
+    background-color: #fef2f2;
+    color: #ef4444;
+}
+
+/* ==========================================================================
+   Standard Custom Cards & Containers
+   ========================================================================== */
+
+.custom-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.75rem;
+}
+
+.custom-card-header {
+    padding: 1.15rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background-color: #ffffff;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.custom-card-header h5 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.custom-card-body {
+    padding: 1.5rem;
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+.custom-table {
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.custom-table thead th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid var(--border-color);
+    white-space: nowrap;
+}
+
+.custom-table tbody td {
+    padding: 0.95rem 1rem;
+    color: #334155;
+    font-size: 0.92rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+/* ==========================================================================
+   Badges & Indicators
+   ========================================================================== */
+
+.badge-status {
+    padding: 0.4em 0.75em;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.badge-in-stock {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.badge-out-of-stock {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.badge-active-loan {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.badge-returned-loan {
+    background-color: #cffafe;
+    color: #155e75;
+    border: 1px solid #a5f3fc;
+}
+
+/* ==========================================================================
+   Buttons & Interactive Elements
+   ========================================================================== */
+
+.btn-primary-custom {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: #ffffff;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.55rem 1.15rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn-primary-custom:hover {
+    background-color: var(--primary-blue-hover);
+    border-color: var(--primary-blue-hover);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+.btn-action {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.15s ease;
+}
+
+/* ==========================================================================
+   Form Controls
+   ========================================================================== */
+
+.form-control-custom, .form-select-custom {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.92rem;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control-custom:focus, .form-select-custom:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    outline: none;
+}
+
+.form-label-custom {
+    font-weight: 500;
+    font-size: 0.88rem;
+    color: #334155;
+    margin-bottom: 0.4rem;
+}
+
+/* ==========================================================================
+   Responsive Sidebar Collapse
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+    #sidebar-wrapper {
+        margin-left: calc(-1 * var(--sidebar-width));
+    }
+    
+    #page-content-wrapper {
+        margin-left: 0;
+    }
+    
+    #wrapper.toggled #sidebar-wrapper {
+        margin-left: 0;
+    }
+}
+

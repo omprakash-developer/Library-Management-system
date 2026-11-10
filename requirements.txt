@@ -1,0 +1,15 @@
+# Library Management System - Requirements Specification
+# -----------------------------------------------------
+# Web Application Framework:
+Flask>=3.0.0
+
+# Built-in Python Standard Libraries Utilized (No installation needed):
+# - sqlite3   (ACID Relational Database & Transactions)
+# - csv       (CSV Data Import/Export Engine)
+# - secrets   (Cryptographically Secure CSRF Tokens)
+# - datetime  (Circulation Issue & Return Audit Timestamps)
+# - pathlib   (Object-Oriented Filesystem Navigation)
+# - os & sys  (System Operations & Console Reconfiguration)
+
+# Python Compatibility:
+# Python 3.8 or higher is recommended (Developed & Tested on Python 3.14).

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}Loan History - Library Management System{% endblock %}
+{% block page_title %}Circulation & Loan History{% endblock %}
+
+{% block content %}
+<div class="custom-card shadow-sm">
+    <div class="custom-card-header flex-wrap gap-2">
+        <div class="d-flex align-items-center gap-2">
+            <h5 class="mb-0"><i class="bi bi-clock-history text-primary"></i> Complete Issue & Return Log</h5>
+            <span class="badge bg-secondary-subtle text-secondary border">{{ history|length }} Total Records</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('export_issues_csv_route') }}" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-download"></i> Export History CSV
+            </a>
+            <a href="{{ url_for('issue_book_page') }}" class="btn btn-primary-custom btn-sm d-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i> Issue Book
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="p-3 border-bottom bg-light bg-opacity-50">
+        <div class="row g-2 align-items-center justify-content-between">
+            <div class="col-md-5">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" class="form-control border-start-0" id="tableSearchInput" placeholder="Filter by student name, book title, or issue ID...">
+                </div>
+            </div>
+            <div class="col-md-5 d-flex justify-content-md-end gap-1">
+                <a href="{{ url_for('history_page') }}" class="btn btn-sm btn-outline-secondary {% if not current_status %}active{% endif %}">All Loans</a>
+                <a href="{{ url_for('history_page', status='active') }}" class="btn btn-sm btn-outline-warning {% if current_status == 'active' %}active{% endif %}">Active Loans</a>
+                <a href="{{ url_for('history_page', status='returned') }}" class="btn btn-sm btn-outline-success {% if current_status == 'returned' %}active{% endif %}">Returned</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Records Table -->
+    <div class="table-responsive">
+        <table class="table custom-table table-hover filterable-table">
+            <thead>
+                <tr>
+                    <th style="width: 90px;">Issue ID</th>
+                    <th>Book Details</th>
+                    <th>Student Name</th>
+                    <th>Issue Date & Time</th>
+                    <th>Return Date & Time</th>
+                    <th>Status</th>
+                    <th class="text-end" style="width: 130px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if history %}
+                    {% for rec in history %}
+                        <tr>
+                            <td class="fw-bold text-secondary">#{{ rec.id }}</td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ rec.title }}</div>
+                                <small class="text-muted">Book ID: #{{ rec.book_id }}</small>
+                            </td>
+                            <td>
+                                <div class="fw-medium text-dark">{{ rec.student_name }}</div>
+                            </td>
+                            <td class="text-muted small">{{ rec.issue_date }}</td>
+                            <td class="small">
+                                {% if rec.return_date %}
+                                    <span class="text-muted">{{ rec.return_date }}</span>
+                                {% else %}
+                                    <span class="text-warning-emphasis fw-medium"><i class="bi bi-hourglass-split"></i> Checked Out</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if rec.return_date %}
+                                    <span class="badge-status badge-returned-loan">
+                                        <i class="bi bi-check2"></i> Returned
+                                    </span>
+                                {% else %}
+                                    <span class="badge-status badge-active-loan">
+                                        <i class="bi bi-clock"></i> Active
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if not rec.return_date %}
+                                    <button type="button" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#returnConfirmModal"
+                                            data-issue-id="{{ rec.id }}"
+                                            data-book-title="{{ rec.title }}"
+                                            data-student-name="{{ rec.student_name }}">
+                                        <i class="bi bi-arrow-return-left"></i> Return
+                                    </button>
+                                {% else %}
+                                    <span class="text-muted small"><i class="bi bi-check-all text-success"></i> Completed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="bi bi-journal-check fs-1 d-block mb-2 text-secondary"></i>
+                            <h5>No circulation records found</h5>
+                            <p class="small text-secondary mb-0">No records match the current filter criteria.</p>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

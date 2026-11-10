@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Return Book - Library Management System{% endblock %}
+{% block page_title %}Process Book Return{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+    <!-- Manual Return by Issue ID Card -->
+    <div class="col-lg-5">
+        <div class="custom-card shadow-sm h-100">
+            <div class="custom-card-header">
+                <h5><i class="bi bi-upc-scan text-primary"></i> Return by Issue ID</h5>
+            </div>
+            <div class="custom-card-body p-4">
+                <form method="POST" action="{{ url_for('return_book_page') }}" novalidate>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="mb-3">
+                        <label for="issue_id" class="form-label-custom">Enter Issue ID <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="bi bi-hash text-muted"></i></span>
+                            <input type="number" class="form-control form-control-custom" id="issue_id" name="issue_id" 
+                                   min="1" placeholder="e.g. 1" required autofocus>
+                        </div>
+                        <div class="form-text">Enter the numeric Issue ID printed on the loan record.</div>
+                    </div>
+
+                    <div class="alert alert-light border small text-muted mb-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-check text-success fs-5"></i>
+                        <div>
+                            The return timestamp will automatically be recorded and book stock incremented by 1.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary-custom w-100 py-2 d-flex align-items-center justify-content-center gap-2">
+                        <i class="bi bi-arrow-return-left"></i> Process Return
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions / Stats Summary -->
+    <div class="col-lg-7">
+        <div class="custom-card shadow-sm h-100">
+            <div class="custom-card-header">
+                <h5><i class="bi bi-info-circle text-primary"></i> Return Guidelines & Policies</h5>
+            </div>
+            <div class="custom-card-body p-4">
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="p-2 rounded bg-primary-subtle text-primary"><i class="bi bi-clock-history fs-4"></i></div>
+                    <div>
+                        <div class="fw-semibold">Real-Time Timestamp Audit</div>
+                        <small class="text-secondary">Every book return is recorded with the exact timestamp to maintain a reliable circulation audit history.</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    <div class="p-2 rounded bg-success-subtle text-success"><i class="bi bi-shield-lock fs-4"></i></div>
+                    <div>
+                        <div class="fw-semibold">Duplicate Return Protection</div>
+                        <small class="text-secondary">If an issue record has already been completed, duplicate returns are blocked to prevent inventory inflation.</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-3">
+                    <div class="p-2 rounded bg-warning-subtle text-warning-emphasis"><i class="bi bi-arrow-repeat fs-4"></i></div>
+                    <div>
+                        <div class="fw-semibold">Instant Stock Restoration</div>
+                        <small class="text-secondary">The inventory for the associated book title is immediately updated and made available for new student loans.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Active Issued Books Table -->
+<div class="custom-card shadow-sm">
+    <div class="custom-card-header">
+        <h5>
+            <i class="bi bi-clock text-warning-emphasis"></i> Currently Active Loans (Pending Return)
+        </h5>
+        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+            {{ active_issues|length }} Active Loan(s)
+        </span>
+    </div>
+    <div class="table-responsive">
+        <table class="table custom-table table-hover">
+            <thead>
+                <tr>
+                    <th style="width: 90px;">Issue ID</th>
+                    <th>Book Title</th>
+                    <th>Student Name</th>
+                    <th>Issue Date & Time</th>
+                    <th>Status</th>
+                    <th class="text-end" style="width: 140px;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if active_issues %}
+                    {% for issue in active_issues %}
+                        <tr>
+                            <td class="fw-bold text-secondary">#{{ issue.id }}</td>
+                            <td>
+                                <div class="fw-semibold text-dark">{{ issue.title }}</div>
+                                <small class="text-muted">Book ID: #{{ issue.book_id }}</small>
+                            </td>
+                            <td>
+                                <div class="fw-medium text-dark">{{ issue.student_name }}</div>
+                            </td>
+                            <td class="text-muted small">{{ issue.issue_date }}</td>
+                            <td>
+                                <span class="badge-status badge-active-loan">
+                                    <i class="bi bi-clock"></i> Active Loan
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1"
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#returnConfirmModal"
+                                        data-issue-id="{{ issue.id }}"
+                                        data-book-title="{{ issue.title }}"
+                                        data-student-name="{{ issue.student_name }}">
+                                    <i class="bi bi-arrow-return-left"></i> Return
+                                </button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-check2-circle fs-1 d-block mb-2 text-success"></i>
+                            <h5>All books have been returned</h5>
+                            <p class="small text-secondary mb-0">There are currently no outstanding loans checked out by students.</p>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

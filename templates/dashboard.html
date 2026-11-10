@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Library Management System{% endblock %}
+{% block page_title %}Operational Dashboard{% endblock %}
+
+{% block content %}
+<!-- Metric Cards Row -->
+<div class="row g-3 mb-4">
+    <!-- Total Titles -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="stat-card stat-card-blue">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Total Titles</div>
+                <div class="stat-icon">
+                    <i class="bi bi-book"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{ stats.total_titles }}</div>
+            <div class="text-muted small mt-1">Unique catalog titles</div>
+        </div>
+    </div>
+
+    <!-- Total Copies / Inventory -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="stat-card stat-card-purple">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Total Inventory</div>
+                <div class="stat-icon">
+                    <i class="bi bi-collection"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{ stats.total_inventory }}</div>
+            <div class="text-muted small mt-1">Total physical copies</div>
+        </div>
+    </div>
+
+    <!-- Available Books -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="stat-card stat-card-green">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Available Titles</div>
+                <div class="stat-icon">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{ stats.in_stock_titles }}</div>
+            <div class="text-muted small mt-1">Titles in stock (qty > 0)</div>
+        </div>
+    </div>
+
+    <!-- Currently Issued -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="stat-card stat-card-amber">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Active Loans</div>
+                <div class="stat-icon">
+                    <i class="bi bi-arrow-up-right-circle"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{ stats.currently_issued }}</div>
+            <div class="text-muted small mt-1">Currently checked out</div>
+        </div>
+    </div>
+
+    <!-- Returned Books -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="stat-card stat-card-teal">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Returned Books</div>
+                <div class="stat-icon">
+                    <i class="bi bi-arrow-down-left-circle"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{ stats.returned_count }}</div>
+            <div class="text-muted small mt-1">Successfully returned</div>
+        </div>
+    </div>
+
+    <!-- Out of Stock -->
+    <div class="col-xl-2 col-md-4 col-sm-6">
+        <div class="stat-card stat-card-red">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="stat-label">Out of Stock</div>
+                <div class="stat-icon">
+                    <i class="bi bi-slash-circle"></i>
+                </div>
+            </div>
+            <div class="stat-value">{{ stats.out_of_stock_titles }}</div>
+            <div class="text-muted small mt-1">Titles needing restock</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Action Shortcuts -->
+<div class="row g-3 mb-4">
+    <div class="col-lg-3 col-sm-6">
+        <a href="{{ url_for('add_book_page') }}" class="text-decoration-none">
+            <div class="p-3 bg-white border rounded-3 shadow-sm d-flex align-items-center gap-3 hover-shadow">
+                <div class="p-2 rounded bg-primary-subtle text-primary fs-4"><i class="bi bi-journal-plus"></i></div>
+                <div>
+                    <div class="fw-semibold text-dark">Add New Book</div>
+                    <small class="text-muted">Register new title to library</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <a href="{{ url_for('issue_book_page') }}" class="text-decoration-none">
+            <div class="p-3 bg-white border rounded-3 shadow-sm d-flex align-items-center gap-3 hover-shadow">
+                <div class="p-2 rounded bg-success-subtle text-success fs-4"><i class="bi bi-person-check"></i></div>
+                <div>
+                    <div class="fw-semibold text-dark">Issue Book</div>
+                    <small class="text-muted">Lend book copy to student</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <a href="{{ url_for('return_book_page') }}" class="text-decoration-none">
+            <div class="p-3 bg-white border rounded-3 shadow-sm d-flex align-items-center gap-3 hover-shadow">
+                <div class="p-2 rounded bg-warning-subtle text-warning-emphasis fs-4"><i class="bi bi-box-arrow-in-down-left"></i></div>
+                <div>
+                    <div class="fw-semibold text-dark">Process Return</div>
+                    <small class="text-muted">Restore stock on return</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-lg-3 col-sm-6">
+        <a href="{{ url_for('reports_page') }}" class="text-decoration-none">
+            <div class="p-3 bg-white border rounded-3 shadow-sm d-flex align-items-center gap-3 hover-shadow">
+                <div class="p-2 rounded bg-info-subtle text-info-emphasis fs-4"><i class="bi bi-file-earmark-spreadsheet"></i></div>
+                <div>
+                    <div class="fw-semibold text-dark">Reports & Export</div>
+                    <small class="text-muted">Analytics and CSV exports</small>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Recent Circulation Activity Table -->
+<div class="custom-card">
+    <div class="custom-card-header">
+        <h5>
+            <i class="bi bi-activity text-primary"></i> Recent Circulation Activity
+        </h5>
+        <div class="d-flex align-items-center gap-2">
+            <a href="{{ url_for('history_page') }}" class="btn btn-sm btn-outline-primary">
+                View All History <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table custom-table table-hover">
+            <thead>
+                <tr>
+                    <th>Issue ID</th>
+                    <th>Book Title</th>
+                    <th>Student Name</th>
+                    <th>Issue Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if recent_issues %}
+                    {% for issue in recent_issues %}
+                        <tr>
+                            <td class="fw-semibold">#{{ issue.id }}</td>
+                            <td>
+                                <div class="fw-medium text-dark">{{ issue.title }}</div>
+                                <small class="text-muted">Book ID: #{{ issue.book_id }}</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle bg-light border d-flex align-items-center justify-content-center text-muted fw-bold" style="width: 28px; height: 28px; font-size: 0.75rem;">
+                                        {{ issue.student_name[0]|upper }}
+                                    </div>
+                                    <span>{{ issue.student_name }}</span>
+                                </div>
+                            </td>
+                            <td class="text-muted small">{{ issue.issue_date }}</td>
+                            <td class="small">
+                                {% if issue.return_date %}
+                                    <span class="text-muted">{{ issue.return_date }}</span>
+                                {% else %}
+                                    <span class="text-warning-emphasis fw-medium">Pending Return</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if issue.return_date %}
+                                    <span class="badge-status badge-returned-loan">
+                                        <i class="bi bi-check2"></i> Returned
+                                    </span>
+                                {% else %}
+                                    <span class="badge-status badge-active-loan">
+                                        <i class="bi bi-clock"></i> Active
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if not issue.return_date %}
+                                    <button type="button" class="btn btn-sm btn-outline-success" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#returnConfirmModal"
+                                            data-issue-id="{{ issue.id }}"
+                                            data-book-title="{{ issue.title }}"
+                                            data-student-name="{{ issue.student_name }}">
+                                        <i class="bi bi-arrow-return-left"></i> Return
+                                    </button>
+                                {% else %}
+                                    <span class="text-muted small"><i class="bi bi-check-all text-success"></i> Completed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-3 d-block mb-1"></i>
+                            No book issue transactions recorded yet.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
